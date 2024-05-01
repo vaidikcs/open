@@ -5,7 +5,7 @@ import torch
 from torchvision.transforms import Compose
 from cog import BasePredictor, Input, Path
 import numpy as np
-
+from PIL import Image
 
 class Predictor(BasePredictor):
     def setup(self):
@@ -34,14 +34,16 @@ class Predictor(BasePredictor):
     
     def predict(
         self,
-        image: np.ndarray = Input(
+        image: Path = Input(
             description=f"input image"),
         model: str = Input(
             description="type of model",
             default='small'
         )
-        ) -> List[List[float]]:
-
+        ) -> Path:
+        with Image.open(image) as img:
+            # Convert the image to a NumPy array
+            image = np.array(img)
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) / 255.0
         image = self.transform({'image': image})['image']
         # image.save('1-processed.jpg')
@@ -55,4 +57,4 @@ class Predictor(BasePredictor):
 
         inv_depth = inv_depth.tolist()
 
-        return inv_depth
+        return Path(inv_depth.tobytes())
