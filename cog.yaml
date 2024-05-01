@@ -1,0 +1,13 @@
+build:
+  gpu: true
+  python_version: "3.10"
+  python_packages:
+    - "torch"
+    - "torchvision"
+    - "opencv-python-headless"
+    - "huggingface_hub"
+    - "gradio==4.14.0"
+    - "gradio_imageslider"
+    - "numpy"
+
+predict: "predict.py:Predictor"
