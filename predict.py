@@ -3,7 +3,7 @@ from depth_anything.util.transform import Resize, NormalizeImage, PrepareForNet
 import cv2
 import torch
 from torchvision.transforms import Compose
-from cog import BasePredictor, Input, Path
+from cog import BasePredictor, Input, Path, File
 import numpy as np
 from PIL import Image
 
@@ -11,7 +11,7 @@ class Predictor(BasePredictor):
     def setup(self):
         self.encoder_large = 'vitl' # can also be 'vitb' or 'vitl'
         self.encoder_small = 'vits'
-        self.large_model = DepthAnything.from_pretrained('LiheYoung/depth_anything_{:}14'.format(self.encoder_large)).eval()
+        self.large_model = 0#DepthAnything.from_pretrained('LiheYoung/depth_anything_{:}14'.format(self.encoder_large)).eval()
         print("large model loaded.")
         self.small_model = DepthAnything.from_pretrained('LiheYoung/depth_anything_{:}14'.format(self.encoder_small)).eval()
         print("both model loaded.")
@@ -40,7 +40,7 @@ class Predictor(BasePredictor):
             description="type of model",
             default='small'
         )
-        ) -> Path:
+        ) -> File:
         with Image.open(image) as img:
             # Convert the image to a NumPy array
             image = np.array(img)
@@ -57,4 +57,4 @@ class Predictor(BasePredictor):
 
         inv_depth = inv_depth.cpu().detach().numpy().tobytes()
 
-        return Path(inv_depth)
+        return File(inv_depth)
