@@ -55,6 +55,6 @@ class Predictor(BasePredictor):
         else:
             inv_depth = self.large_model(image)
 
-        inv_depth = inv_depth.cpu().numpy().tobytes()
+        inv_depth = inv_depth.cpu().detach().numpy().tobytes()
 
         return Path(inv_depth)
